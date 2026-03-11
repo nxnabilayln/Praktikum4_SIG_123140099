@@ -1,0 +1,20 @@
+SELECT
+    a.nama AS fasilitas_asal,
+    b.nama AS fasilitas_tujuan,
+    b.jenis AS jenis,
+    ROUND(
+        ST_Distance(
+            a.geom::geography,
+            b.geom::geography
+        )::numeric
+    ) AS jarak_meter,
+    ROUND(
+        ST_Distance(
+            a.geom::geography,
+            b.geom::geography
+        )::numeric / 1000, 2
+    ) AS jarak_km
+FROM public.fasilitas_publik a
+JOIN public.fasilitas_publik b ON a.id <> b.id
+WHERE a.nama = 'Institut Teknologi Sumatera'
+ORDER BY jarak_meter ASC;
