@@ -1,0 +1,12 @@
+SELECT
+    f.id,
+    f.nama AS nama_fasilitas,
+    f.jenis AS jenis,
+    f.alamat,
+    COALESCE(
+        w.nama, 'Di luar wilayah terdaftar'
+    ) AS berada_di_wilayah
+FROM public.fasilitas_publik f
+LEFT JOIN public.wilayah w
+    ON ST_Within(f.geom, w.geom)
+ORDER BY w.nama NULLS LAST, f.id;
