@@ -1,0 +1,20 @@
+SELECT
+    f.id,
+    f.nama AS nama_fasilitas,
+    f.jenis AS jenis,
+    ROUND(
+        ST_Distance(
+            f.geom::geography,
+            ST_SetSRID(
+                ST_MakePoint(105.314793, -5.357880),
+                4326
+            )::geography
+        )::numeric
+    ) AS jarak_dari_itera_m
+FROM public.fasilitas_publik f
+WHERE f.nama <> 'Institut Teknologi Sumatera'
+ORDER BY
+    f.geom <-> ST_SetSRID(
+        ST_MakePoint(105.314793, -5.357880), 4326
+    )
+LIMIT 3;
