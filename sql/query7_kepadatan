@@ -1,0 +1,16 @@
+SELECT
+    w.nama AS wilayah,
+    COUNT(f.id) AS total_fasilitas,
+    ROUND(
+        ST_Area(w.geom::geography)::numeric / 1000000, 2
+    ) AS luas_km2,
+    ROUND(
+        COUNT(f.id)::numeric / NULLIF(
+            ST_Area(w.geom::geography)::numeric / 1000000, 0
+        ), 4
+    ) AS kepadatan_per_km2
+FROM public.wilayah w
+LEFT JOIN public.fasilitas_publik f
+    ON ST_Contains(w.geom, f.geom)
+GROUP BY w.id, w.nama, w.geom
+ORDER BY kepadatan_per_km2 DESC NULLS LAST;
