@@ -1,0 +1,23 @@
+SELECT
+    f.id,
+    f.nama AS nama_fasilitas,
+    f.jenis AS jenis,
+    ROUND(
+        ST_Distance(
+            f.geom::geography,
+            ST_SetSRID(
+                ST_MakePoint(105.314793, -5.357880), 4326
+            )::geography
+        )::numeric
+    ) AS jarak_meter
+FROM public.fasilitas_publik f
+WHERE
+    ST_DWithin(
+        f.geom::geography,
+        ST_SetSRID(
+            ST_MakePoint(105.314793, -5.357880), 4326
+        )::geography,
+        3000  -- naikkan ke 5000 jika hasil kosong
+    )
+    AND f.nama <> 'Institut Teknologi Sumatera'
+ORDER BY jarak_meter ASC;
