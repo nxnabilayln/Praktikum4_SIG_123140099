@@ -1,0 +1,22 @@
+-- a.Semua jalan yang berpotongan dengan semua wilayah
+SELECT
+    j.nama                    AS nama_jalan,
+    w.nama                    AS nama_wilayah,
+    ROUND(
+        ST_Length(j.geom::geography)::numeric
+    )                         AS panjang_jalan_m
+FROM public.jalan j
+JOIN public.wilayah w
+    ON ST_Intersects(j.geom, w.geom)
+ORDER BY w.nama, panjang_jalan_m DESC;
+
+-- b. Khusus Kecamatan Sukarame
+SELECT
+    j.nama                    AS nama_jalan,
+    ROUND(
+        ST_Length(j.geom::geography)::numeric
+    )                         AS panjang_jalan_m
+FROM public.jalan j
+JOIN public.wilayah w ON ST_Intersects(j.geom, w.geom)
+WHERE w.nama = 'Kecamatan Sukarame'
+ORDER BY panjang_jalan_m DESC;
